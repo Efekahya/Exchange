@@ -2,6 +2,7 @@ import { DataTypes } from "sequelize"
 import bcrypt from "bcrypt"
 import sequelize from "../utils/db"
 import Portfolio from "./portfolio"
+import Stock from "./stock"
 
 const User = sequelize.define("User", {
   username: {
@@ -19,9 +20,14 @@ const User = sequelize.define("User", {
   },
 })
 
-User.belongsTo(Portfolio)
 User.hasOne(Portfolio)
+User.belongsTo(Portfolio)
+
 Portfolio.hasOne(User)
 Portfolio.belongsTo(User)
+Portfolio.hasMany(Stock)
+
+Stock.hasOne(Portfolio)
+Stock.belongsTo(Portfolio)
 
 export default User

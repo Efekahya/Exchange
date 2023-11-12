@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize"
 import sequelize from "../utils/db"
-import Portfolio from "./portfolio"
 
 const Stock = sequelize.define("Stock", {
   symbol: {
@@ -25,7 +24,5 @@ const Stock = sequelize.define("Stock", {
     },
   },
 })
-
-Stock.hasOne(Portfolio)
 
 export default Stock

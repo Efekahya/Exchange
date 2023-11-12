@@ -1,15 +1,11 @@
 import { DataTypes } from "sequelize"
 import sequelize from "../utils/db"
-import User from "./user"
 
 const Portfolio = sequelize.define("Portfolio", {
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   cash: {
     type: DataTypes.FLOAT,
     allowNull: false,
+    defaultValue: 0,
   },
   total: {
     type: DataTypes.VIRTUAL,
@@ -21,8 +17,5 @@ const Portfolio = sequelize.define("Portfolio", {
     },
   },
 })
-
-Portfolio.hasOne(User)
-Portfolio.belongsTo(User)
 
 export default Portfolio
