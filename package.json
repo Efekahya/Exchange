@@ -4,8 +4,9 @@
   "description": "",
   "scripts": {
     "build": "npx tsc",
-    "start": "node dist/index.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
+    "db:createdb": "npx tsc && node dist/scripts/createDb.js",
+    "start": "npm run db:createdb && node dist/index.js",
+    "dev": "npm run db:createdb && concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
   },
   "repository": {
     "type": "git",
