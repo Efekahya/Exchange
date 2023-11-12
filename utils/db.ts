@@ -17,6 +17,10 @@ const sequelize = new Sequelize("postgres", USER, PASS, {
   host: HOST,
   dialect: "postgres",
   port: Number(PORT),
+  define: {
+    freezeTableName: true,
+  },
+  logging: false,
 })
 
 try {
