@@ -1,21 +1,48 @@
-import { DataTypes } from "sequelize"
+import {
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+  CreationOptional,
+  DataTypes,
+  Association,
+  HasManyCreateAssociationMixin,
+  HasManyGetAssociationsMixin,
+} from "sequelize"
 import sequelize from "../utils/db"
+import PStock from "./pStock"
+import User from "./user"
 
-const Portfolio = sequelize.define("Portfolio", {
-  cash: {
-    type: DataTypes.FLOAT,
-    allowNull: false,
-    defaultValue: 0,
-  },
-  total: {
-    type: DataTypes.VIRTUAL,
-    get() {
-      return this.getDataValue("cash") + this.getDataValue("Stock.total")
+class Portfolio extends Model<
+  InferAttributes<Portfolio>,
+  InferCreationAttributes<Portfolio>
+> {
+  declare id: CreationOptional<number>
+  declare cash: CreationOptional<number>
+
+  declare createPStock: HasManyCreateAssociationMixin<PStock>
+  declare getPStocks: HasManyGetAssociationsMixin<PStock>
+
+  declare static associations: {
+    user: Association<Portfolio, User>
+    pStocks: Association<Portfolio, PStock>
+  }
+}
+
+Portfolio.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    set() {
-      throw new Error("Do not try to set the `total` value!")
+    cash: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 0,
     },
   },
-})
+  { sequelize }
+)
+Portfolio.hasMany(PStock)
 
 export default Portfolio

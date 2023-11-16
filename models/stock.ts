@@ -1,28 +1,45 @@
-import { DataTypes } from "sequelize"
+import {
+  CreationOptional,
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+} from "sequelize"
 import sequelize from "../utils/db"
 
-const Stock = sequelize.define("Stock", {
-  symbol: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  shares: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  price: {
-    type: DataTypes.FLOAT,
-    allowNull: false,
-  },
-  total: {
-    type: DataTypes.VIRTUAL,
-    get() {
-      return this.getDataValue("shares") * this.getDataValue("price")
+class Stock extends Model<
+  InferAttributes<Stock>,
+  InferCreationAttributes<Stock>
+> {
+  declare id: CreationOptional<number>
+  declare symbol: string
+  declare shares: number
+  declare price: number
+}
+
+Stock.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    set() {
-      throw new Error("Do not try to set the `total` value!")
+    symbol: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    shares: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    price: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
     },
   },
-})
+  {
+    sequelize,
+  }
+)
 
 export default Stock

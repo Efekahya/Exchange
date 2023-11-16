@@ -3,6 +3,9 @@ import dotenv from "dotenv"
 import morgan from "morgan"
 import sequelize from "./utils/db"
 import userRouter from "./routes/user"
+import stockRouter from "./routes/stock"
+import portfolioRouter from "./routes/portfolio"
+import Portfolio from "./models/portfolio"
 
 dotenv.config()
 
@@ -27,6 +30,17 @@ app.get("/", (req: Request, res: Response) => {
 })
 
 app.use(userRouter)
+app.use(stockRouter)
+app.use(portfolioRouter)
+
+app.get("/test", async (req: Request, res: Response) => {
+  const portfolio = await Portfolio.findByPk(1)
+
+  portfolio?.getPStocks().then((pStocks) => {
+    console.log(pStocks[0].dataValues)
+    res.json(pStocks)
+  })
+})
 
 app.listen(port, () => {
   connectDb()
