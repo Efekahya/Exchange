@@ -13,7 +13,7 @@ if (!USER || !PASS || !HOST || !PORT || !NAME) {
   throw new Error("Missing database credentials. Check .env file.")
 }
 
-const sequelize = new Sequelize("postgres", USER, PASS, {
+const sequelize = new Sequelize(NAME, USER, PASS, {
   host: HOST,
   dialect: "postgres",
   port: Number(PORT),
@@ -22,13 +22,5 @@ const sequelize = new Sequelize("postgres", USER, PASS, {
   },
   logging: false,
 })
-
-try {
-  sequelize.query(
-    `SELECT 'CREATE DATABASE ${NAME}' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '${NAME}')`
-  )
-} catch (error) {
-  console.error("Unable to create database:", error)
-}
 
 export default sequelize
