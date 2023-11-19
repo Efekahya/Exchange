@@ -2,11 +2,13 @@ import { Request, Response } from "express"
 import Stock from "../models/stock"
 
 export const createStock = async (req: Request, res: Response) => {
+  const { symbol, shares, price } = req.body
+
   try {
     const stock = await Stock.create({
-      symbol: "AAPL",
-      shares: 10,
-      price: 100,
+      symbol,
+      shares,
+      price,
     })
 
     res.status(201).json(stock)

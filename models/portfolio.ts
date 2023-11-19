@@ -7,18 +7,24 @@ import {
   Association,
   HasManyCreateAssociationMixin,
   HasManyGetAssociationsMixin,
+  NonAttribute,
+  HasOneSetAssociationMixin,
 } from "sequelize"
 import sequelize from "../utils/db"
 import PStock from "./pStock"
 import User from "./user"
+import Transaction from "./transactions"
 
 class Portfolio extends Model<
   InferAttributes<Portfolio>,
   InferCreationAttributes<Portfolio>
 > {
   declare id: CreationOptional<number>
-  declare cash: CreationOptional<number>
+  declare balance: CreationOptional<number>
 
+  declare user?: NonAttribute<User>
+
+  declare setUser: HasOneSetAssociationMixin<User, User["id"]>
   declare createPStock: HasManyCreateAssociationMixin<PStock>
   declare getPStocks: HasManyGetAssociationsMixin<PStock>
 
@@ -35,8 +41,8 @@ Portfolio.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    cash: {
-      type: DataTypes.FLOAT,
+    balance: {
+      type: DataTypes.DOUBLE,
       allowNull: false,
       defaultValue: 0,
     },
@@ -44,5 +50,8 @@ Portfolio.init(
   { sequelize }
 )
 Portfolio.hasMany(PStock)
+
+Portfolio.hasOne(Transaction)
+Transaction.belongsTo(Portfolio)
 
 export default Portfolio

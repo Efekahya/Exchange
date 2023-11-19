@@ -15,6 +15,9 @@ class Stock extends Model<
   declare symbol: string
   declare shares: number
   declare price: number
+
+  declare createdAt?: CreationOptional<Date>
+  declare updatedAt?: CreationOptional<Date>
 }
 
 Stock.init(
@@ -27,13 +30,14 @@ Stock.init(
     symbol: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     shares: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
     price: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.DOUBLE,
       allowNull: false,
     },
   },

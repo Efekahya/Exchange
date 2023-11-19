@@ -2,7 +2,7 @@ import {
   Association,
   CreationOptional,
   DataTypes,
-  HasOneCreateAssociationMixin,
+  ForeignKey,
   HasOneGetAssociationMixin,
   HasOneSetAssociationMixin,
   InferAttributes,
@@ -19,9 +19,10 @@ class PStock extends Model<
 > {
   declare id: CreationOptional<number>
   declare ownedShares: number
-  declare avgPrice: CreationOptional<number>
+  declare avgPrice: number
 
   declare stock?: NonAttribute<Stock>
+  declare StockId: ForeignKey<Stock["id"]>
   declare getStock: HasOneGetAssociationMixin<Stock>
   declare setStock: HasOneSetAssociationMixin<Stock, Stock["id"]>
   declare static associations: {
@@ -36,15 +37,11 @@ PStock.init(
       autoIncrement: true,
       primaryKey: true,
     },
-
     ownedShares: {
       type: DataTypes.INTEGER,
     },
     avgPrice: {
-      type: DataTypes.VIRTUAL,
-      get() {
-        this.getDataValue("avgPrice")
-      },
+      type: DataTypes.DOUBLE,
       allowNull: false,
     },
   },
@@ -53,12 +50,6 @@ PStock.init(
   }
 )
 
-PStock.belongsTo(Stock, {
-  as: "portfolio",
-})
-
-PStock.belongsTo(Stock, {
-  as: "stock",
-})
+PStock.belongsTo(Stock)
 
 export default PStock

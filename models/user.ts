@@ -1,11 +1,13 @@
 import {
   Association,
+  BelongsToSetAssociationMixin,
   CreationOptional,
   DataTypes,
-  ForeignKey,
+  HasOneGetAssociationMixin,
   InferAttributes,
   InferCreationAttributes,
   Model,
+  NonAttribute,
 } from "sequelize"
 import bcrypt from "bcrypt"
 import sequelize from "../utils/db"
@@ -15,11 +17,21 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<number>
   declare username: string
   declare password: string
+  declare role: CreationOptional<"user" | "admin">
 
-  declare portfolio?: ForeignKey<Portfolio["id"]>
+  declare portfolio?: NonAttribute<Portfolio>
+
+  declare setPortfolio: BelongsToSetAssociationMixin<Portfolio, Portfolio["id"]>
+  declare getPortfolio: HasOneGetAssociationMixin<Portfolio>
 
   declare static associations: {
     portfolio: Association<User, Portfolio>
+  }
+
+  get validatePassword() {
+    return (password: string) => {
+      return bcrypt.compareSync(password, this.password)
+    }
   }
 }
 
@@ -30,9 +42,15 @@ User.init(
       autoIncrement: true,
       primaryKey: true,
     },
+    role: {
+      type: DataTypes.ENUM("user", "admin"),
+      allowNull: false,
+      defaultValue: "user",
+    },
     username: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     password: {
       type: DataTypes.STRING,
@@ -47,13 +65,8 @@ User.init(
   { sequelize }
 )
 
-User.hasOne(Portfolio, {
-  sourceKey: "id",
-  foreignKey: "user",
-})
+User.hasOne(Portfolio)
 
-User.belongsTo(Portfolio, {
-  foreignKey: "portfolio",
-})
+Portfolio.belongsTo(User)
 
 export default User

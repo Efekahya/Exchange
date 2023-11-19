@@ -3,6 +3,6 @@ import { createStock } from "../controllers/stockController"
 
 const stockRouter = Router()
 
-stockRouter.route("/stock").post(createStock)
+stockRouter.route("/").post(createStock)
 
 export default stockRouter
